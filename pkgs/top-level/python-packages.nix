@@ -6783,6 +6783,8 @@ in {
 
   sip = callPackage ../development/python-modules/sip { };
 
+  sip5 = callPackage ../development/python-modules/sip5 { };
+
   sipsimple = callPackage ../development/python-modules/sipsimple { };
 
   six = callPackage ../development/python-modules/six { };

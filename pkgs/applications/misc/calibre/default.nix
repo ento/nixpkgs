@@ -16,7 +16,7 @@
 , hyphen
 , unrarSupport ? false
 , chmlib
-, pythonPackages
+, python3Packages
 , libusb1
 , libmtp
 , xdg_utils
@@ -26,11 +26,11 @@
 
 mkDerivation rec {
   pname = "calibre";
-  version = "4.23.0";
+  version = "5.6.0";
 
   src = fetchurl {
     url = "https://download.calibre-ebook.com/${version}/${pname}-${version}.tar.xz";
-    sha256 = "sha256-Ft5RRzzw4zb5RqVyUaHk9Pu6H4V/F9j8FKoTLn61lRg=";
+    sha256 = "0mayiw6l5c5ck16x8gsxcv3q9xqgxypidhnl8k2zdkyv1w92wjj8";
   };
 
   patches = [
@@ -42,9 +42,11 @@ mkDerivation rec {
     # the unrar patch is not from debian
   ] ++ lib.optional (!unrarSupport) ./dont_build_unrar_plugin.patch;
 
+  escaped_pyqt5_dir = builtins.replaceStrings ["/"] ["\\/"] (toString python3Packages.pyqt5);
+
   prePatch = ''
-    sed -i "/pyqt_sip_dir/ s:=.*:= '${pythonPackages.pyqt5}/share/sip/PyQt5':"  \
-      setup/build_environment.py
+    sed -i "s/\[tool.sip.project\]/[tool.sip.project]\nsip-include-dirs = [\"${escaped_pyqt5_dir}\/share\/sip\/PyQt5\"]/g" \
+      setup/build.py
 
     # Remove unneeded files and libs
     rm -rf resources/calibre-portable.* \
@@ -56,8 +58,6 @@ mkDerivation rec {
   enableParallelBuilding = true;
 
   nativeBuildInputs = [ pkgconfig qmake removeReferencesTo ];
-
-  CALIBRE_PY3_PORT = builtins.toString pythonPackages.isPy3k;
 
   buildInputs = [
     chmlib
@@ -76,7 +76,7 @@ mkDerivation rec {
     sqlite
     xdg_utils
   ] ++ (
-    with pythonPackages; [
+    with python3Packages; [
       apsw
       beautifulsoup4
       css-parser
@@ -92,11 +92,12 @@ mkDerivation rec {
       msgpack
       netifaces
       pillow
+      pyqt-builder
       pyqt5
       pyqtwebengine
       python
       regex
-      sip
+      sip5
       # the following are distributed with calibre, but we use upstream instead
       odfpy
     ] ++ lib.optional (unrarSupport) unrardll
@@ -114,11 +115,11 @@ mkDerivation rec {
     export FC_LIB_DIR=${fontconfig.lib}/lib
     export PODOFO_INC_DIR=${podofo.dev}/include/podofo
     export PODOFO_LIB_DIR=${podofo.lib}/lib
-    export SIP_BIN=${pythonPackages.sip}/bin/sip
+    export SIP_BIN=${python3Packages.sip}/bin/sip
     export XDG_DATA_HOME=$out/share
     export XDG_UTILS_INSTALL_MODE="user"
 
-    ${pythonPackages.python.interpreter} setup.py install --root=$out \
+    ${python3Packages.python.interpreter} setup.py install --root=$out \
       --prefix=$out \
       --libdir=$out/lib \
       --staging-root=$out \
@@ -147,7 +148,7 @@ mkDerivation rec {
   #   /nix/store/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-podofo-0.9.6-dev/include/podofo/base/PdfVariant.h
   preFixup = ''
     remove-references-to -t ${podofo.dev} \
-      $out/lib/calibre/calibre/plugins${lib.optionalString pythonPackages.isPy3k "/3"}/podofo.so
+      $out/lib/calibre/calibre/plugins/podofo.so
 
     for program in $out/bin/*; do
       wrapProgram $program \

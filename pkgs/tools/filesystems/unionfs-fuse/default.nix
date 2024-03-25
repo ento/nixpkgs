@@ -1,14 +1,15 @@
-{ lib, stdenv, fetchFromGitHub, cmake, fuse }:
-
-stdenv.mkDerivation rec {
+{ lib, stdenv, fetchFromGitHub, cmake, fuse3, macfuse-stubs, pkg-config }:
+let
+  fuse = if stdenv.isDarwin then macfuse-stubs else fuse3;
+in stdenv.mkDerivation rec {
   pname = "unionfs-fuse";
-  version = "2.2";
+  version = "3.4";
 
   src = fetchFromGitHub {
     owner = "rpodgorny";
     repo = "unionfs-fuse";
     rev = "v${version}";
-    sha256 = "sha256-EJryML6E0CW4kvsqMRqV3cq77j50HuylNzgaHD6CL/o=";
+    sha256 = "sha256-zTHJURpv56qY8FzS8DLnaH3HmKC5RzV9OEr7piTLDRg=";
   };
 
   patches = [
@@ -24,7 +25,7 @@ stdenv.mkDerivation rec {
       --replace '/usr/local/include/osxfuse/fuse' '${fuse}/include/fuse'
   '';
 
-  nativeBuildInputs = [ cmake ];
+  nativeBuildInputs = [ cmake pkg-config ];
   buildInputs = [ fuse ];
 
   # Put the unionfs mount helper in place as mount.unionfs-fuse. This makes it
@@ -41,7 +42,6 @@ stdenv.mkDerivation rec {
   '';
 
   meta = with lib; {
-    broken = stdenv.isDarwin;
     description = "FUSE UnionFS implementation";
     homepage = "https://github.com/rpodgorny/unionfs-fuse";
     license = licenses.bsd3;

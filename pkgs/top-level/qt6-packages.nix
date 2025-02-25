@@ -39,6 +39,8 @@ makeScopeWithSplicing' {
 
   fcitx5-configtool = kdePackages.callPackage ../tools/inputmethods/fcitx5/fcitx5-configtool.nix { };
 
+  fcitx5-cskk-qt = callPackage ../tools/inputmethods/fcitx5/fcitx5-cskk.nix { enableQt = true; };
+
   fcitx5-qt = callPackage ../tools/inputmethods/fcitx5/fcitx5-qt.nix { };
 
   fcitx5-skk-qt = callPackage ../tools/inputmethods/fcitx5/fcitx5-skk.nix { enableQt = true; };

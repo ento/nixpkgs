@@ -13,6 +13,7 @@ REPOS = [
         "fcitx5-chewing",
         "fcitx5-chinese-addons",
         "fcitx5-configtool",
+        "fcitx5-cskk",
         "fcitx5-gtk",
         "fcitx5-hangul",
         "fcitx5-lua",

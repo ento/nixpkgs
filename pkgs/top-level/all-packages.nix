@@ -3225,6 +3225,8 @@ with pkgs;
 
   fcitx5-chewing = callPackage ../tools/inputmethods/fcitx5/fcitx5-chewing.nix { };
 
+  fcitx5-cskk = qt6Packages.callPackage ../tools/inputmethods/fcitx5/fcitx5-cskk.nix { };
+
   fcitx5-gtk = callPackage ../tools/inputmethods/fcitx5/fcitx5-gtk.nix { };
 
   fcitx5-hangul = callPackage ../tools/inputmethods/fcitx5/fcitx5-hangul.nix { };

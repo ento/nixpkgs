@@ -7004,6 +7004,12 @@
     githubId = 5493775;
     name = "Ente";
   };
+  ento = {
+    email = "nixpkgs@stillspinning.cc";
+    github = "ento";
+    githubId = 21108;
+    name = "ento";
+  };
   Enzime = {
     github = "Enzime";
     githubId = 10492681;

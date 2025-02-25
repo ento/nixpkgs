@@ -1,0 +1,13 @@
+diff --git old/src/env.rs new/src/env.rs
+index 75efa77..57ae93b 100644
+--- old/src/env.rs
++++ new/src/env.rs
+@@ -38,7 +38,7 @@ fn search_path_from_xdg_data_dir(
+     }
+ 
+     let xdg_data_dirs =
+-        xdg_data_dirs_env.unwrap_or_else(|_| "/usr/local/share/:/usr/share/".to_string());
++        xdg_data_dirs_env.unwrap_or_else(|_| "@out@/share".to_string());
+     let xdg_data_dirs = xdg_data_dirs.split(':');
+     for xdg_data_dir in xdg_data_dirs {
+         if PathBuf::from(format!("{xdg_data_dir}/{filepath}")).exists() {
